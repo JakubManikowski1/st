@@ -11,8 +11,8 @@ from googleapiclient.http import HttpRequest
 socket.setdefaulttimeout(15 * 60)
 
 SCOPE = "https://www.googleapis.com/auth/spreadsheets"
-SPREADSHEET_ID = "1rkMVLvh3JrBq_tbi4Ho0qjCDAP3vYdNuWOEjYpkJLNU"
-SHEET_NAME = "Database"
+SPREADSHEET_ID = "1VzwuTdcVkEOrPs_by28pNAYoNilwco8eNMCW2bHbmSk"
+SHEET_NAME = "database"
 GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}"
 
 
