@@ -64,7 +64,7 @@ with st.expander("💬 Open comments"):
 
     if submit:
         tz = pytz.timezone('Europe/Warsaw')
-        date = datetime.datetime.now(tz=tz).strftime("%d/%m/%Y %H:%M:%S")
+        date = datetime.now(tz=tz).strftime("%d/%m/%Y %H:%M:%S")
         # date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         # date = strftime("%a, %d %b %Y %I:%M:%S %p %Z",)
 
