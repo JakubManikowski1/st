@@ -19,7 +19,7 @@ st.set_page_config(layout="centered", page_icon="💬", page_title="Commenting a
 
 # Data visualisation part
 
-st.title("💬 Commenting app")
+st.title("Commenting app")
 
 source = data.stocks()
 all_symbols = source.symbol.unique()
