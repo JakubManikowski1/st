@@ -15,7 +15,7 @@ def space(num_lines=1):
         st.write("")
 
 
-st.set_page_config(layout="centered", page_icon="💬", page_title="Commenting app")
+st.set_page_config(layout="centered", page_icon="✉", page_title="Commenting app")
 
 # Data visualisation part
 
