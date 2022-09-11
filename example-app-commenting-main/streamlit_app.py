@@ -1,5 +1,5 @@
-# from datetime import datetime
-from time import gmtime, strftime
+from datetime import datetime
+import pytz
 import streamlit as st
 from vega_datasets import data
 
@@ -63,8 +63,10 @@ with st.expander("💬 Open comments"):
     submit = form.form_submit_button("Add comment")
 
     if submit:
+        tz = pytz.timezone('Europe/Warsaw')
+        date = datetime.datetime.now(tz=tz).strftime("%d/%m/%Y %H:%M:%S")
         # date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        date = strftime("%a, %d %b %Y %I:%M:%S %p %Z")
+        # date = strftime("%a, %d %b %Y %I:%M:%S %p %Z",)
 
         db.insert(conn, [[name, comment, date]])
         if "just_posted" not in st.session_state:
