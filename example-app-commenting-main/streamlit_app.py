@@ -28,6 +28,8 @@ symbols = st.multiselect("Choose stocks to visualize", all_symbols, all_symbols[
 space(1)
 
 source = source[source.symbol.isin(symbols)]
+st.write(source)
+
 chart = chart.get_chart(source)
 st.altair_chart(chart, use_container_width=True)
 
