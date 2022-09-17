@@ -1,13 +1,17 @@
 from datetime import datetime
-import pytz
+
 import streamlit as st
 from vega_datasets import data
+import pandas as pd
 
 from utils import chart, db
 
 COMMENT_TEMPLATE_MD = """{} - {}
 > {}"""
 
+from zipfile import ZipFile
+from io import BytesIO
+import urllib.request as urllib2
 
 def space(num_lines=1):
     """Adds empty lines to the Streamlit app."""
@@ -15,25 +19,60 @@ def space(num_lines=1):
         st.write("")
 
 
-st.set_page_config(layout="centered", page_icon="✉", page_title="Commenting app")
+st.set_page_config(layout="centered", page_icon="💬", page_title="Commenting app")
 
 # Data visualisation part
 
 st.title("Commenting app")
 
-source = data.stocks()
-all_symbols = source.symbol.unique()
+r = urllib2.urlopen("https://info.bossa.pl/pub/ciagle/omega/omegacgl.zip").read()
+files = ZipFile(BytesIO(r))
+# spolka_csv = files.open("WOJAS.txt")
+# spolka = pd.read_csv(spolka_csv)
+# st.write(spolka)
+
+    # spolka['Date'] = spolka['Date'].apply(lambda x: pd.to_datetime(str(x), format='%Y%m%d'))
+    # chart1 = chart.get_chart(spolka)
+    # st.altair_chart(chart1, use_container_width=True)
+
+text_files = files.namelist()
+text_files1 = [x for x in text_files if not x.startswith(('INTL','INTS','BNPPBK','BNPPBS','BNPPC','BNPPE','BNPPG','BNPPS','GSI','GSW','RC','UC')) ]
+# filesLen = len(text_files)
+filesLen1 = len(text_files1)
+# st.write(filesLen)
+st.write("Number of unique ISINS: ")
+st.write(filesLen1)
+
+for i in range(0, filesLen1):
+    sp_csv = files.open(text_files1[i])
+    if i == 0:
+        sp = pd.read_csv(sp_csv)
+        # st.write(sp)
+    else:
+        # sp_n = pd.read_csv(sp_csv)
+        sp = sp.append(pd.read_csv(sp_csv))
+        # sp= pd.concat([sp, sp_n], axis= 1)
+
+# st.write(sp.head())
+
+sp['Date'] = sp['Date'].apply(lambda x: pd.to_datetime(str(x), format='%Y%m%d'))
+all_symbols = sp.Name.unique()
 symbols = st.multiselect("Choose stocks to visualize", all_symbols, all_symbols[:3])
-
-space(1)
-
-source = source[source.symbol.isin(symbols)]
-st.write(source)
-
+source = sp[sp.Name.isin(symbols)]
 chart = chart.get_chart(source)
 st.altair_chart(chart, use_container_width=True)
 
-space(2)
+# source = data.stocks()
+# all_symbols = source.symbol.unique()
+# symbols = st.multiselect("Choose stocks to visualize", all_symbols, all_symbols[:3])
+
+# space(1)
+
+# source = source[source.symbol.isin(symbols)]
+# chart = chart.get_chart(source)
+# st.altair_chart(chart, use_container_width=True)
+
+# space(2)
 
 # Comments part
 
@@ -65,11 +104,7 @@ with st.expander("💬 Open comments"):
     submit = form.form_submit_button("Add comment")
 
     if submit:
-        tz = pytz.timezone('Europe/Warsaw')
-        date = datetime.now(tz=tz).strftime("%d/%m/%Y %H:%M:%S")
-        # date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        # date = strftime("%a, %d %b %Y %I:%M:%S %p %Z",)
-
+        date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         db.insert(conn, [[name, comment, date]])
         if "just_posted" not in st.session_state:
             st.session_state["just_posted"] = True
